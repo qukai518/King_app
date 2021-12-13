@@ -23,7 +23,7 @@ ck需要手动抓两个数据
 
 
 
-const $ = new Env('[CK滴滴果园]');
+
 const _0x21d180 = _0x2b46,
 	_0x331151 = _0x3e0a;
 (function(_0x42ede7, _0x286b86) {
