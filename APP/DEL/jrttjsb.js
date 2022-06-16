@@ -7,6 +7,7 @@
  * cron 1-59/15 6-23 * * *  yml2213_javascript_master/jrttjsb.js
  *
  * 5-26     完成 签到  宝箱  睡觉  走路  吃饭 阅读(基本黑号)等任务 ,农场看情况加不加
+ * 6-12     默认关闭通知,出错才会提示
  * 
  * 不要问跟以前的有啥不同,都是开源脚本,自己看就行了
  *
@@ -17,13 +18,15 @@
  * 完整cookie 或 ck的 sessionid_ss 项都行 ,苹果的域名可能会变一点点,自己抓包注意下就行
  * 自己更改定时
  * 
- * 
+ * tg频道: https://t.me/yml2213_tg  
+ * tg群组: https://t.me/yml_tg    
+ * qq频道: https://qun.qq.com/qqweb/qunpro/share?_wv=3&_wwv=128&appChannel=share&inviteCode=1W4InjV&appChannel=share&businessType=9&from=181074&biz=ka&shareSource=5
  * 
  */
 
 const $ = new Env("今日头条极速版");
 const notify = $.isNode() ? require("./sendNotify") : "";
-const Notify = 1 		//0为关闭通知,1为打开通知,默认为1
+const Notify = 0 		//0为关闭通知,1为打开通知,默认为1
 const debug = 0 		//0为关闭调试,1为打开调试,默认为0
 ///////////////////////////////////////////////////////////////////
 let ckStr = process.env.jrttjsb_data;
@@ -36,7 +39,7 @@ let version = "88011";
 let adIdList = [26, 181, 186, 187, 188, 189, 190, 195, 210, 214, 216, 225, 308, 324, 327, 329];
 let maxReadPerRun = ($.isNode() ? process.env.jrttjsbReadNum : $.getdata('jrttjsbReadNum')) || 10;
 ///////////////////////////////////////////////////////////////////
-let Version = '\n    2022/5/26     折腾下这个老毛吧,没好的新毛  '
+let Version = '\nyml   2022/5/24     折腾下这个老毛吧,没好的新毛  '
 let thank = `感谢 xxxx 的投稿`
 let test = `脚本测试中,有bug及时反馈!     脚本测试中,有bug及时反馈!`
 ///////////////////////////////////////////////////////////////////
@@ -61,7 +64,7 @@ async function tips(ckArr) {
     await wyy();
 
     console.log(`\n=================== 共找到 ${ckArr.length} 个账号 ===================`);
-    msg += `\n =================== 共找到 ${ckArr.length} 个账号 ===================`
+    msg += `\n=================== 共找到 ${ckArr.length} 个账号 ===================`
     debugLog(`【debug】 这是你的账号数组: \n ${ckArr} `);
 }
 
@@ -177,7 +180,10 @@ async function user_info(doTask) {
         }
     } else {
         console.log(`    用户信息: 失败 ❌ 了呢,原因未知！  ${result} `);
-        msg += `\n    用户信息: 失败 ❌ 了呢,原因未知!`;
+        msg = `\n    用户信息: 失败 ❌ 了呢,原因未知!`;
+        message = `\n    用户信息: 失败 ❌ 了呢,原因未知!`;
+        let notify = require("./sendNotify");
+        await notify.sendNotify($.name, message);
     }
 }
 
@@ -524,11 +530,11 @@ async function ExcitationAd(task_id) {
         msg += `\n    领取宝箱视频奖励获得 ${result.data.score_amount} 金币`;
     } else if (result.err_no == 1071) {
         console.log(`    领取宝箱视频奖励 ${result.err_tips}`);
-        msg += `\n    领取宝箱视频奖励获得 ${result.err_tips}`;
+        // msg += `\n    领取宝箱视频奖励获得 ${result.err_tips}`;
     } else {
         console.log(`    宝箱视频奖励: 失败 ❌ 了呢,原因未知!`);
         console.log(result);
-        msg += `\n    宝箱视频奖励: 失败 ❌ 了呢,原因未知!`;
+        // msg += `\n    宝箱视频奖励: 失败 ❌ 了呢,原因未知!`;
     }
 }
 
