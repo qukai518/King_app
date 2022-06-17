@@ -6,7 +6,7 @@ Author: Squaregentleman
 Modifier: Oreo
 Date: Tue Aug 10 08:24:30 UTC 2021
 cron: 25 0/8 * * *
-new Env('小米改步');
+new Env('【小米改步】');
 ------------
 环境变量说明
 在配置文件里面添加
