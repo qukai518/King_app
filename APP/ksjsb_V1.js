@@ -14,7 +14,9 @@
  * 44 2,4,6,8,10,12,14,16,18,20 * * *
  
  *	———————————变量—————————————
-	export ksjsbcookie=""			##抓的CK一整段URL丢进去,多账号的话,##自己拼接格式：##client_salt=xxxxxxxx&kuaishou.api_st=xxxxxxx&did=xxxx&ud=****ud是自己的userid，不想填可以空格
+	export ksjsbcookie=""			##抓的CK一整段URL丢进去,
+	##		多账号拼接格式：		ud是自己的userid，不想填可以空格
+	export ksjsbcookie="client_salt=xxxxxxxx&kuaishou.api_st=xxxxxxx&did=xxxx&ud=****"
 	export ksjsbapitoken=""			##/填写token，必填,就是发你的所谓卡密
 	export ksjsbWithdrawTime="2"	##提现时间
 	export ksjsbtx="false"			##是否自动提现，默认false不自动提现
