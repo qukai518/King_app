@@ -27,7 +27,7 @@
  *  
  * 
  */
-const jsname = '快手极速版'
+const jsname = '[快手极速版]V1'
 const $ = Env(jsname);
 const notify = $.isNode() ? require('./sendNotify') : '';      // 这里是 node（青龙属于node环境）通知相关的
 const { default: Request } = require('got/dist/source/core');
