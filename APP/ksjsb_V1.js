@@ -1,4 +1,5 @@
 /**
+ * ceshi_aa52766f13a0f611edca860606decb246289588ee95f705f6djtyjf0548b65bccc1d1edcbc67e187a4f77f957cb331428ba18e0ba6dc4b188feeff3df8d23
  * Ck抓取教程 
  *1、root 安卓机
  *2、小黄鸟证书装到系统证书下
@@ -13,12 +14,12 @@
  * 44 2,4,6,8,10,12,14,16,18,20 * * *
  
  *	———————————变量—————————————
-	export ksjsbcookie=""			##抓的CK一整段URL丢进去,多账号的话,账号之间回车
-	export ksjsbapitoken="huhfuiws"	##/填写token，必填,就是发你的所谓卡密
+	export ksjsbcookie=""			##抓的CK一整段URL丢进去,多账号的话,##自己拼接格式：##client_salt=xxxxxxxx&kuaishou.api_st=xxxxxxx&did=xxxx&ud=****ud是自己的userid，不想填可以空格
+	export ksjsbapitoken=""			##/填写token，必填,就是发你的所谓卡密
 	export ksjsbWithdrawTime="2"	##提现时间
 	export ksjsbtx="false"			##是否自动提现，默认false不自动提现
-	export ksjsbjbdh="false"		##是否提现前自动兑换金币，默认false不兑换
-	export kstx="true"				##true=自动提现，false=不自动提现，默认不自动提现
+	export ksjsbjbdh="true"			##是否提现前自动兑换金币，默认false不兑换
+	export kstx="false"				##true=自动提现，false=不自动提现，默认不自动提现
 	
  * 本脚本仅用于学习使用请勿直接运行
  * 
