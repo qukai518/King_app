@@ -9,7 +9,7 @@ cron "0 0 1,10,17 * * ? " script-path=mt_mrhb.js,tag=美团每日红包
 const $ = new Env('美团每日红包');
 const notify = $.isNode() ? require('./sendNotify') : '';
 //Node.js用户请在jdCookie.js处填写京东ck;
-let jdCookieNode = $.isNode() ? (process.env.mtmehb_token ? process.env.mtmehb_token : "") : ($.getdata('mtmehb_token') ? $.getdata('mtmehb_token') : "")
+let jdCookieNode = $.isNode() ? (process.env.meituanCookie ? process.env.meituanCookie : "") : ($.getdata('meituanCookie') ? $.getdata('meituanCookie') : "")
 //IOS等用户直接用NobyDa的jd cookie
 let cookiesArr = [], cookie = '', message;
 
