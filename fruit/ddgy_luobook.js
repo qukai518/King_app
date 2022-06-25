@@ -3,34 +3,28 @@
 小程序：滴滴出行 （5天种水果）
 入口：小程序首页=> 5天种水果。
 需要手动完成新手任务。
-
 获取ck : 滴滴果园--> 点击赚水滴
 【圈X】
 重写
 https://game.xiaojukeji.com/api/game/mission/get?
 主机名
 game.xiaojukeji.com
-js
+js.............
 https://gitee.com/xiecoll/radish-script/raw/master/ddgy.js
-
 青龙使用方法：添加环境变量 
 多账号用 @ 隔开
 export ddgyurl = 'https://game.xiaojukeji.com/api/game/mission/get?.........@https://game.xiaojukeji.com/api/game/mission/get?.........' 
-
 抓包 https://game.xiaojukeji.com/api/game/mission/get?... """整条url
-
 拉取脚本
 ql raw https://gitee.com/xiecoll/radish-script/raw/master/ddgy.js
-
 */
 
-const $ = new Env('[滴滴果园]');
-//const $ = cron: 0 0 */2 * * *
+const $ = new Env('滴滴果园');
 let status;
 status = (status = ($.getval("ddgystatus") || "1")) > 1 ? `${status}` : ""; // 账号扩展字符
 let qqgyArr = [], ddgycount = ''
 let ddgyurl = $.isNode() ? (process.env.ddgyurl ? process.env.ddgyurl : "") : ($.getdata('ddgyurl') ? $.getdata('ddgyurl') : "")
-let qqgys = ''
+let qqgys = ""
 let xbiz, prod_key, xpsid, dchn, xoid, uid, xenv, xpsid_from, xpsid_root, game_id, platform, token, wsgsig, num = 1
 
 var timestamp = Math.round(new Date().getTime() / 1000).toString();
