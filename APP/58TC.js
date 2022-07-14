@@ -38,6 +38,9 @@ let httpResult //global buffer
 
 let userCookie = ($.isNode() ? process.env.wbtcCookie : $.getdata('wbtcCookie')) || '';
 let userUA = ($.isNode() ? process.env.wbtcUA : $.getdata('wbtcUA')) || 'Mozilla/5.0 (Linux; U; Android 9; 16s Build/PKQ1.190202.001; wv) AppleWebKit/534.30 (KHTML, like Gecko) Version/4.0 Chrome/55.0.2883.91 Mobile Safari/534.30';
+//let userUA = ($.isNode() ? process.env.wbtcUA : $.getdata('wbtcUA')) || 'Mozilla/5.0 (Linux; Android 10; 16s Build/QKQ1.191222.002; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/83.0.4103.106 Mobile Safari/537.36; WUBA/11.6.5';
+//let userUA = ($.isNode() ? process.env.wbtcUA : $.getdata('wbtcUA')) || 'Mozilla/5.0 (iPhone; CPU iPhone OS 15_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148 WUBA/10.26.5';
+
 let userCookieArr = []
 let userList = []
 
