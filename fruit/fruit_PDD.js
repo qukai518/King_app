@@ -1,4 +1,5 @@
 /**
+ * 打开链接登录https://mobile.yangkeduo.com/login.html?from=https%3A%2F%2Fmobile.yangkeduo.com%2Fgarden_index_lz_0.html&refer_page_name=garden_home&refer_page_id=10269_1664499936892_ysdccuuswo&refer_page_sn=10269
  * 环境变量 ddgyck ='accesstoken'
  * 小程序或APP 进果园一圈，，搜索accesstoken,多账号@隔开
  * 实现部分任务，随缘更新.....
