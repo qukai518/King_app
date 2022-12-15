@@ -14,9 +14,11 @@
  const { log } = require("console");
 
  const $ = new Env("特仑苏");
+ const date = require('silly-datetime');
+ const signTime = date.format(new Date(),'YYYY-MM-DD');
  const notify = $.isNode() ? require("./sendNotify") : "";
  const Notify = 1 		//0为关闭通知,1为打开通知,默认为1
- const debug = 1			//0为关闭调试,1为打开调试,默认为0
+ const debug = 0		//0为关闭调试,1为打开调试,默认为0
  //---------------------------------------------------------------------------------------------------------
  let ckStr = ($.isNode() ? process.env.tls_data : $.getdata('tls_data')) || '';
  let msg, ck;
@@ -33,7 +35,7 @@
 	 let Version = `\n📌 本地脚本: V 0.0.1 `
 	 DoubleLog(`${Version}\n📌 🆙 更新内容: ${Change}`);
 	 // DoubleLog(`${thank}`);
-	 await wyy();
+	 // await wyy();
 	 DoubleLog(`\n========== 共找到 ${ckArr.length} 个账号 ==========`);
 	 debugLog(`【debug】 这是你的账号数组:\n ${ckArr}`);
  }
@@ -65,7 +67,6 @@
 	 console.log("\n开始 积分查询");
 	 await jifen();
 	 await $.wait(2 * 1000);
- 
  }
  
  
@@ -105,38 +106,41 @@
 	 }
  
  }
+
  
- /**
-  * 积分查询    httpPost
+  /**
+  * 积分    httpPost
   */
- async function jifen() {
-	 try {
-		 let url = {
+   async function jifen() {
+	try {
+		let url = {
 			 url: `${hostname}/wxapi/rest/getUser?openid=${ck}`,
-			 headers: {
-				 'Host': host,
-				 'Content-Length': '41',
-				 'Content-Type': 'application/json;charset=UTF-8',
-			 },
-			 body: JSON.stringify({})
-		 };
-		 let result = await httpPost(url, `签到`);
- 
-		 console.log(result);
-		 if (result?.code == 0) {
+			headers: {
+				'Host': host,
+				'Content-Length': '1078',
+				'Content-Type': 'application/json;',
+				'openid': ck[0],
+			},
+			body: JSON.stringify({
+				// 'pageIndex': 1,
+				// 'pageSize': 30
+			  })
+		};
+		let result = await httpPost(url, `查询积分`);
+
+		console.log(result);
+		if (result?.code == 0) {
 			 DoubleLog(`查询成功，当前积分:${result?.data.mnCommonUser.integral} 🎉 `);
-			 await wait(3);
-		 } else {
-			 DoubleLog(`查询: 失败 ❌ 了呢,原因未知!`);
-			 console.log(result);
-		 }
-	 } catch (error) {
-		 console.log(error);
-	 }
- 
- }
- 
- 
+			await wait(3);
+		} else {
+			DoubleLog(`查询积分: 失败 ❌ 了呢,原因未知!`);
+			console.log(result);
+		}
+	} catch (error) {
+		console.log(error);
+	}
+
+}
  
  
  
