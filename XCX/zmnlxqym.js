@@ -25,18 +25,18 @@ let friendidArr =[]
 	if (!(await Envs()))  	//多账号分割 判断变量是否为空  初步处理多账号
 		return;
 	else {
-        await getVersion();
-	  	console.log(`\n============ 当前版本：${Version}  最新版本：${VersionLatest} ============`)
+        //await getVersion();
+        console.log(`\n============ 当前版本：${Version}  最新版本：${VersionLatest} ============`)
         console.log(`目前实现功能：抚摸马儿+喂马+做任务+偷饲料喂饲料`);
-		console.log(`因为没抓到加好友请求,好友好像需要通过转发链接才行`);
-		console.log(`互助功能封印中,有好友需要运行的把ganta的值修改成1`);
+        console.log(`因为没抓到加好友请求,好友好像需要通过转发链接才行`);
+        console.log(`互助功能封印中,有好友需要运行的把ganta的值修改成1`);
         console.log(`脚本库：http://www.holyxie.com/`);    
 
-		console.log(`\n\n=========================================    \n脚本执行 - 北京时间(UTC+8)：${new Date(
+        console.log(`\n\n=========================================    \n脚本执行 - 北京时间(UTC+8)：${new Date(
 			new Date().getTime() + new Date().getTimezoneOffset() * 60 * 1000 +
 			8 * 60 * 60 * 1000).toLocaleString()} \n=========================================\n`);
  
-		console.log(`\n=================== 共找到 ${zmnlxqArr.length} 个账号 ===================`)
+        console.log(`\n=================== 共找到 ${zmnlxqArr.length} 个账号 ===================`)
          
 		for (let index = 0; index < zmnlxqArr.length; index++) {
 			let num = index + 1
