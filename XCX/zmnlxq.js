@@ -25,8 +25,8 @@ let ok = ''
 	if (!(await Envs()))  	//多账号分割 判断变量是否为空  初步处理多账号
 		return;
 	else {
-        await getVersion();
-	  console.log(`\n============ 当前版本：${Version}  最新版本：${VersionLatest} ============`)
+        //await getVersion();
+        console.log(`\n============ 当前版本：${Version}  最新版本：${VersionLatest} ============`)
         console.log(`目前实现功能：日常签到`);
         console.log(`脚本库：http://www.holyxie.com/`);    
 
