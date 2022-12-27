@@ -1,8 +1,5 @@
 /**
- *
  * 网易严选  小程序 
- *
- 
  *
  * 6-9		感谢大佬脚本
  *小程序 抓miniapp.you.163.com   X-WX-3RD-Session 
@@ -40,7 +37,7 @@ async function tips(ckArr) {
 	// console.log(thank);
 	// msg += `${thank}`
 
-	await wyy();
+	//await wyy();
 	console.log(`\n================= 共找到 ${ckArr.length} 个账号 =================`);
 	msg += `\n================= 共找到 ${ckArr.length} 个账号 =================`
 	debugLog(`【debug】 这是你的账号数组:\n ${ckArr}`);
