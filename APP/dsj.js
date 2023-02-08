@@ -90,13 +90,13 @@ if (new Date().getTimezoneOffset() / 60 != '-8' && $.time('HH') < '16') {
             // await dsj_led()
             await run()
             // await run_rw()
-            await dsj_lqp()
+            //await dsj_lqp()
             
             await tasks(); // 任务状态
             await wx_tasks()
-            await getGametime(); // 游戏时长
+            //await getGametime(); // 游戏时长
             await dsj_getinfo()// 用户信息
-            //await coinlist(); //总计
+            await coinlist(); //总计
             await total(); // 金币状态
             //await cash(); // 现金状态
             //await cashlist(); // 现金列表
@@ -137,40 +137,40 @@ async function run() {
 }
 
 async function run_rw(){
-    //天天签到看视频任务8次
+//天天签到看视频任务8次
     // if(task_xiaoman == 0){
         // await dsj_ksp()//天天签到看视频任务8次
     // }
-    //浏览广告赚
+//浏览广告赚
     // if(H5Page_4 == 0){
         // await dsj_ggz()//浏览广告赚
             
     // }
-    //播放任务
-    if(playTask == 0){
-        await dsj_jrydz()//今日阅读赚
-    }
-    //手机版分享
+//播放任务
+    // if(playTask == 0){
+        // await dsj_jrydz()//今日阅读赚
+    // }
+//手机版分享
     // if(M005 == 0){
         // await dsj_sjbfx()//手机分享
     // }
-    //访问点歌台
+//访问点歌台
     // if(task_mobile_visit_song == 0){
         // await dsj_dgt()
     // }
-    //浏览电视相册
+//浏览电视相册
     // if(task_mobile_visit_album == 0){
         // await dsj_fwxc()//访问相册
     // }
-    //相册上电视task_mobile_upload_album
+//相册上电视task_mobile_upload_album
     // if(task_mobile_upload_album == 0){
         // await dsj_xcsds()//相册上电视
     // }
-    //开家庭号task_mobile_create_family
+//开家庭号task_mobile_create_family
     // if(task_mobile_create_family == 0){
         // await dsj_kjth() //开家庭号
     // }
-    //刷短视频
+//刷短视频
     // if(ShortvideoPlay == 0){
         // await dsj_sdsp()//刷短视频
     // }
@@ -192,7 +192,7 @@ let url = {
      
      if(data.errCode==0){
          console.log(`\n【任务状态】: \n`)
-         //天天看视频任务8次
+	//天天看视频任务8次
          // if(data.data[0].dayCompCount==8){
              // console.log(`${data.data[0].name}: 已完成`)
              // task_xiaoman = 1
@@ -200,7 +200,7 @@ let url = {
              // console.log(`${data.data[0].name}: 未完成`)
              // task_xiaoman = 0
          // }
-         //浏览广告赚
+    //浏览广告赚
           // if(data.data[1].dayCompCount==5){
             // console.log(`${data.data[1].name}: 已完成`)
             // H5Page_4 = 1
@@ -209,7 +209,7 @@ let url = {
             // H5Page_4 = 0
           // }
           
-          //播放任务
+    //播放任务
           if(data.data[10].dayCompCount==9){
               console.log(`${data.data[10].name}: 已完成`)
               playTask = 1
@@ -217,7 +217,7 @@ let url = {
              console.log(`${data.data[10].name}: 未完成`)
               playTask = 0 
           }
-          //手机版分享
+    //手机版分享
           // if(data.data[6].dayCompCount==1){
               // console.log(`${data.data[6].name}: 已完成`)
               // M005 =1
@@ -225,7 +225,7 @@ let url = {
               // console.log(`${data.data[6].name}: 未完成`)
               // M005 =0
           // }
-          //刷短视频
+    //刷短视频
           // if(data.data[11].dayCompCount==5){
               // console.log(`${data.data[11].name}: 已完成`)
               // ShortvideoPlay = 1
@@ -233,7 +233,7 @@ let url = {
               // console.log(`${data.data[11].name}: 未完成`)
               // ShortvideoPlay = 0
           // }
-          //访问点歌台
+    //访问点歌台
           // if(data.data[12].dayCompCount==1){
               // console.log(`${data.data[12].name}: 已完成`)
               // task_mobile_visit_song = 1
@@ -241,7 +241,7 @@ let url = {
               // console.log(`${data.data[12].name}: 未完成`)
               // task_mobile_visit_song = 0
           // }
-          //浏览电视相册
+    //浏览电视相册
           // if(data.data[13].dayCompCount==1){
               // console.log(`${data.data[13].name}: 已完成`)
               // task_mobile_visit_album = 1
@@ -249,7 +249,7 @@ let url = {
               // console.log(`${data.data[13].name}: 未完成`)
               // task_mobile_visit_album = 0
           // }
-          //相册上电视task_mobile_upload_album
+    //相册上电视task_mobile_upload_album
           // if(data.data[14].dayCompCount==1){
               // console.log(`${data.data[14].name}: 已完成`)
               // task_mobile_upload_album = 1
@@ -257,7 +257,7 @@ let url = {
               // console.log(`${data.data[14].name}: 未完成`)
               // task_mobile_upload_album = 0
          // }
-          //开家庭号task_mobile_create_family
+    //开家庭号task_mobile_create_family
           // if(data.data[15].dayCompCount==1){
               // console.log(`${data.data[15].name}: 已完成`)
               // task_mobile_create_family = 1
