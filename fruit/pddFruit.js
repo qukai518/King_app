@@ -2,7 +2,7 @@
 [task_local]
 # 拼多多果园-小程序
 15 8 * * * pddFruit.js, tag=拼多多果园-小程序, enabled=true
-搜mobile.yangkeduo.com，请求头的AccessToken，设置PDD_TOKENS 多账号@分割 
+搜mobile.yangkeduo.com，请求头的AccessToken，设置ddgyck 多账号@分割 
 */
 const $ = new Env('拼多多果园-小程序');
 // const notify = $.isNode() ? require('./sendNotifySp') : '';
@@ -11,17 +11,17 @@ $.lackCardIds = []
 $.giftRecords = []
 $.lackMsg = ''
 $.helpFlag = true // 获取助力码
-$.taskList = [36155, 36164, 36125, 37464, 37509, 36013, 36007, 36167, 36132]
-if (process.env.PDD_TOKENS) {
-    if (process.env.PDD_TOKENS.indexOf('@') > -1) {
-        cookieArr = process.env.PDD_TOKENS.split('@');
-    } else if (process.env.PDD_TOKENS.indexOf('\n') > -1) {
-        cookieArr = process.env.PDD_TOKENS.split('\n');
+$.taskList = []
+if (process.env.ddgyck) {
+    if (process.env.ddgyck.indexOf('@') > -1) {
+        cookieArr = process.env.ddgyck.split('@');
+    } else if (process.env.ddgyck.indexOf('\n') > -1) {
+        cookieArr = process.env.ddgyck.split('\n');
     } else {
-        cookieArr = [process.env.PDD_TOKENS];
+        cookieArr = [process.env.ddgyck];
     }
 } else {
-    console.log('未发现有效Cookie，请填写PDD_TOKENS!')
+    console.log('未发现有效Cookie，请填写ddgyck!')
     return
 }
 
