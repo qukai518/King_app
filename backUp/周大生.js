@@ -1,18 +1,12 @@
 /**
- *
  * 周大生会员福利社  小程序
- *
  * cron 0 0,7 * * *  yml2213_javascript_master/zds.js
- *
  * 7-13		签到，积分查询
- *
  * ========= 青龙--配置文件 =========
  * 变量格式: export zds_data=' authorization @ authorization '   ,多账号用 换行 或 @ 分割
- * 
  */
 
  const { log } = require("console");
-
  const $ = new Env("周大生");
  const notify = $.isNode() ? require("./sendNotify") : "";
  const Notify = 1 		//0为关闭通知,1为打开通知,默认为1
@@ -23,17 +17,14 @@
  let ck_status = true;
  let host = 'gw.chowtaiseng.com';
  let hostname = 'https://' + host;
- 
- //---------------------------------------------------------------------------------------------------------
  let Change = '签到积分兑实物'
  let thank = `\n感谢 群友 的投稿\n`
  //---------------------------------------------------------------------------------------------------------
  
  async function tips(ckArr) {
-	 let Version = `\n📌 本地脚本: V 0.0.1 `
+	 let Version = `\n📌 本地脚本: V 0.0.1 📌`
 	 DoubleLog(`${Version}\n📌 🆙 更新内容: ${Change}`);
-	 // DoubleLog(`${thank}`);
-	 await wyy();
+//	 DoubleLog(`${thank}`);
 	 DoubleLog(`\n========== 共找到 ${ckArr.length} 个账号 ==========`);
 	 debugLog(`【debug】 这是你的账号数组:\n ${ckArr}`);
  }
@@ -70,9 +61,7 @@
  
  
  
- /**
-  * 签到    httpPost
-  */
+ /**  * 签到    	httpPost  */
  async function signin() {
 	 try {
 		 let url = {
@@ -102,9 +91,7 @@
  
  }
  
- /**
-  * 积分查询    httpGet
-  */
+ /**  * 积分查询    httpGet  */
   async function check_value() {
 	try {
 		let url = {
@@ -133,18 +120,8 @@
  
  
  
- 
- 
- 
- 
- 
- 
- 
- 
- // #region ********************************************************  固定代码  ********************************************************
- /**
-  * 变量检查
-  */
+ // #region ********************************************************  固定代码  ********************************************************//
+ //**  * 变量检查  *//
  async function checkEnv(ck, Variables) {
 	 return new Promise((resolve) => {
 		 let ckArr = []
@@ -191,9 +168,7 @@
 	 }
  }
  
- /**
-  * 双平台log输出
-  */
+ /**  * 双平台log输出  */
  function DoubleLog(data) {
 	 if ($.isNode()) {
 		 if (data) {
@@ -207,9 +182,7 @@
  
  }
  
- /**
-  * 随机 数字 + 大写字母 生成
-  */
+ /**  * 随机 数字 + 大写字母 生成  */
  function randomszdx(e) {
 	 e = e || 32;
 	 var t = "QWERTYUIOPASDFGHJKLZXCVBNM1234567890",
@@ -221,9 +194,7 @@
  }
  
  
- /**
-  * 随机 数字 + 小写字母 生成
-  */
+ /**  * 随机 数字 + 小写字母 生成  */
  function randomszxx(e) {
 	 e = e || 32;
 	 var t = "qwertyuioplkjhgfdsazxcvbnm1234567890",
@@ -237,40 +208,30 @@
  
  
  
- /**
-  * 随机整数生成
-  */
+ /**  * 随机整数生成  */
  function randomInt(min, max) {
 	 return Math.round(Math.random() * (max - min) + min);
  }
  
  
- /**
-  * 时间戳 13位
-  */
+ /**  * 时间戳 13位  */
  function ts13() {
 	 return Math.round(new Date().getTime()).toString();
  }
  
- /**
-  * 时间戳 10位
-  */
+ /**  * 时间戳 10位  */
  function ts10() {
 	 return Math.round(new Date().getTime() / 1000).toString();
  }
  
- /**
-  * 获取当前小时数
-  */
+ /**  * 获取当前小时数  */
  function local_hours() {
 	 let myDate = new Date();
 	 let h = myDate.getHours();
 	 return h;
  }
  
- /**
-  * 获取当前分钟数
-  */
+ /**  * 获取当前分钟数  */
  function local_minutes() {
 	 let myDate = new Date();
 	 let m = myDate.getMinutes();
@@ -278,18 +239,14 @@
  }
  
  
- /**
-  * 获取当前年份 2022
-  */
+ /**  * 获取当前年份   */
  function local_year() {
 	 let myDate = new Date();
 	 y = myDate.getFullYear();
 	 return y;
  }
  
- /**
-  * 获取当前月份(数字)  5月
-  */
+ /**  * 获取当前月份(数字)   */
  function local_month() {
 	 let myDate = new Date();
 	 let m = myDate.getMonth();
@@ -297,9 +254,7 @@
  }
  
  
- /**
- * 获取当前月份(数字)  05月 补零
- */
+ /** * 获取当前月份(数字)  补零 */
  function local_month_two() {
 	 let myDate = new Date();
 	 let m = myDate.getMonth();
@@ -309,9 +264,7 @@
 	 return m;
  }
  
- /**
- * 获取当前天数(数字)  5日  
- */
+ /** * 获取当前天数(数字)     */
  function local_day() {
 	 let myDate = new Date();
 	 let d = myDate.getDate();
@@ -319,9 +272,7 @@
  }
  
  
- /**
- * 获取当前天数  05日 补零
- */
+ /** * 获取当前天数   补零 */
  function local_day_two() {
 	 let myDate = new Date();
 	 let d = myDate.getDate();
@@ -333,9 +284,7 @@
  
  
  
- /**
-  * 等待 X 秒
-  */
+ /**  * 等待 X 秒  */
  function wait(n) {
 	 return new Promise(function (resolve) {
 		 setTimeout(resolve, n * 1000);
@@ -343,33 +292,7 @@
  }
  
  
- /**
-  * 每日网抑云
-  */
- function wyy() {
-	 return new Promise((resolve) => {
-		 let url = {
-			 url: `http://ovooa.com/API/wyrp/api.php`,
-		 }
-		 $.get(url, async (err, resp, data) => {
-			 try {
-				 data = JSON.parse(data);
-				 // console.log(data);
-				 console.log(`网抑云时间: ${data.data.Content}  by--${data.data.Music}`)
-				 msg = `[网抑云时间]: ${data.data.Content}  by--${data.data.Music}`
-				 // DoubleLog(`[网抑云时间]: ${data.data.Content}  by--${data.data.Music}`);
-			 } catch (e) {
-				 $.logErr(e, resp);
-			 } finally {
-				 resolve()
-			 }
-		 }, timeout = 3)
-	 })
- }
- 
- /**
-  * get请求
-  */
+ /**  * get请求  */
  async function httpGet(getUrlObject, tip, timeout = 3) {
 	 return new Promise((resolve) => {
 		 let url = getUrlObject;
@@ -414,9 +337,7 @@
 	 });
  }
  
- /**
-  * post请求
-  */
+ /**  * post请求  */
  async function httpPost(postUrlObject, tip, timeout = 3) {
 	 return new Promise((resolve) => {
 		 let url = postUrlObject;
@@ -461,9 +382,7 @@
 	 });
  }
  
- /**
-  * 网络请求 (get, post等)
-  */
+ /**  * 网络请求 (get, post等)  */
  async function httpRequest(postOptionsObject, tip, timeout = 3) {
 	 return new Promise((resolve) => {
  
@@ -504,9 +423,7 @@
  }
  
  
- /**
-  * debug调试
-  */
+ /**  * debug调试  */
  function debugLog(...args) {
 	 if (debug) {
 		 console.log(...args);
@@ -515,9 +432,7 @@
  
  
  
- // /**
- //  *  单名字 Env
- //  */
+ // /** //  *  单名字 Env //  */
  // function Env() {
  //     return new class {
  //         isNode() {
