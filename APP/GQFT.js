@@ -1,177 +1,166 @@
 /**
- * cron "28 10,16 * * *" HQZL.js
- * export HQZL="账号1&密码1 账号2&密码2"
+ * cron "33 6,16,23 * * *" GQFT.js
+ * export GQFT='[{"id":"1","token":"1","refreshToken":"1"},{"id":"2","token":"2","refreshToken":"2"}]'
  */
-const $ = new Env('红旗智联')
-const HQZL = ($.isNode() ? process.env.HQZL : $.getdata("HQZL")) || '';
+const $ = new Env('广汽丰田')
+const GQFT = ($.isNode() ? JSON.parse(process.env.GQFT) : $.getjson("GQFT")) || [];
 let Utils = undefined;
-let CryptoJS = ''
-let phone = ''
-let password = ''
 let token = ''
-let aid = ''
+let refreshToken = ''
 let notice = ''
-let clientKey = '-----BEGIN PRIVATE KEY-----\n' +
-    'MIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQClKFtRRKV2PbeY\n' +
-    'koRw2eKpstLik9hddOuB1UMc/AkkP8I3WbOCoYyvkk7bYHq98Csa4kZabFBzSeCR\n' +
-    'aqFMxbQ114kwvs0u/mKG/j3mB9cys9kZJOIfutqyBUpbsi+RDVhpVB0dZoHRqr/C\n' +
-    'Sw9ORX1CC1zk4ITO9Lvp/ystIH9wKdp4Gg7OyFGXyw0asfVqbMLkMqwqMqZFuKX1\n' +
-    'GQj+xNMcPEsBPwYeFbAc9Fzdu4x0goh8moTLd7sa8KjyV68sORQenl+7QhPte26e\n' +
-    'SI3Ezy73tLjPSgaZ6qPkAyLHZGfIAPsLwK2ZM236z3D7u85qVQii6tNDCH0NgOU1\n' +
-    'ODQlre/xAgMBAAECggEADR1LQwTEbsMv1PmtcpiamwcMH9nFkIY8PS8GCUMqJqq5\n' +
-    'bVO+IV1aooZnpJvgozxy78uP8pYvPThckK9653G7gZr/1dMQz+57PGTr3Vw6Blip\n' +
-    'oImBOyvHOeOZp/ZaOJZqstJvDWqaXF/GolL7gCecbqYgVjxNz3E3irksYIT4GZvY\n' +
-    'hsobS/HY4gdVMT0YfLzaHaERU+zToUuZ6tIJ4OBbasxwt8vH3RKDqviDtZNtWtUS\n' +
-    'hfKIgAfrFiDtAY5ii3+kVf7SHFjC/a0aYmeRHXH2/B8wwiBbv8SOe4TWCgHgF0X6\n' +
-    '93cfdkk6hnfK154cNF6Ea39nSm17E/UVieJkKWtkEQKBgQDIihxBdygtcchEsoCH\n' +
-    'et3XrMIniyWSxYJGD8Wtw7GuHIVW6S6i8PDVtt4C9Uli93xezV0dVTc+xzNh/3g/\n' +
-    'NDwgj/Q2k2CF+e17iHQbflqqw4pCsQPi3DUjKPM3aQ7geplwYyTRCzf5xtXfKDGv\n' +
-    'DfeLzOc6wkpkpMKuFPngyFOHOwKBgQDS1UPybmURqHW8YDWsa0MFdj/3fLTxv5xX\n' +
-    'UMPgGuQaBW2U2EkTDFzliq2JbIWx79HBPzmLirIQ/F9DSORaCM2JnRINDvJQC45X\n' +
-    'EcxnAmrae+FqcaZ3KoI7RD7fB11+McEoyr6LzxRnbYPV8Diq8l48ZHxGwKfJPHYf\n' +
-    'kGgjKjbqwwKBgGLsxl2A8z/ftiQ1TfQHJzJCVZB+Mq3BYq8/DovWUmsKRLiH1Oqq\n' +
-    'IpO6XrBk4avBXAfEFJ/orpT4XR+Fj4LWOKbzfEwDzYSpsn3S5Tu+y+kbBrQ5cCpT\n' +
-    '6J6Mj9YQrDcOI2zua3X3q8g6TryDrmalZC0BijtRJrOZFzQawt0g1RuLAoGAL8T0\n' +
-    'dTyAF+Ukb/8Yii1vbRBi4+9UjCXPBZWeG+vb3O13666pt/AoKDYopad6D1v4GaH6\n' +
-    'ptxRBjo4V2Vvn9q4v0Jgcab+ThagNKgquPg6P7Cr3VNM1VlDUqxe1mezzkD1tAlj\n' +
-    '7QeJZvnQUivwmwL5SRO3eMxz98uENBijD7yj3sMCgYEAxr8GdzDGi7CyY1Rc62fK\n' +
-    'oyUz7AdrUgaYrBaNMFNqstXda/1I8WNxOmAnAATSWEMFPeM32NNtop9YZiAbR3Y1\n' +
-    'weKf5jk+YKQmwcqnRh61HafrfFrblAD+D1EF3Atg6F35dniC5h9usZDNgiuBw1sv\n' +
-    'tpoEb7g0v/k37gQghbggrGs=\n' +
-    '-----END PRIVATE KEY-----'
-let clientCert = '-----BEGIN CERTIFICATE-----\n' +
-    'MIIDmjCCAoKgAwIBAgIIH4/IYJHo1A0wDQYJKoZIhvcNAQELBQAwIjELMAkGA1UE\n' +
-    'BhMCQ04xEzARBgNVBAMMCkZBVy1tb2JpbGUwHhcNMTkwMTIzMDYwMDUyWhcNNDgw\n' +
-    'ODE4MDYwMDUyWjBCMQswCQYDVQQGEwJDTjEPMA0GA1UECgwGRkFXLUhRMQwwCgYD\n' +
-    'VQQLDANBcHAxFDASBgNVBAMMC0RlZmF1bHQtQXBwMIIBIjANBgkqhkiG9w0BAQEF\n' +
-    'AAOCAQ8AMIIBCgKCAQEApShbUUSldj23mJKEcNniqbLS4pPYXXTrgdVDHPwJJD/C\n' +
-    'N1mzgqGMr5JO22B6vfArGuJGWmxQc0ngkWqhTMW0NdeJML7NLv5ihv495gfXMrPZ\n' +
-    'GSTiH7rasgVKW7IvkQ1YaVQdHWaB0aq/wksPTkV9Qgtc5OCEzvS76f8rLSB/cCna\n' +
-    'eBoOzshRl8sNGrH1amzC5DKsKjKmRbil9RkI/sTTHDxLAT8GHhWwHPRc3buMdIKI\n' +
-    'fJqEy3e7GvCo8levLDkUHp5fu0IT7XtunkiNxM8u97S4z0oGmeqj5AMix2RnyAD7\n' +
-    'C8CtmTNt+s9w+7vOalUIourTQwh9DYDlNTg0Ja3v8QIDAQABo4GzMIGwMB8GA1Ud\n' +
-    'IwQYMBaAFDPZV0KpQWJymU15AsK+gOjkSXVzMB0GA1UdDgQWBBRLrIP+46GjEeE1\n' +
-    'y7FfxhJTUqtiCTALBgNVHQ8EBAMCBsAwYQYDVR0fBFowWDA1oDOgMaQvMC0xCzAJ\n' +
-    'BgNVBAYTAkNOMQ8wDQYDVQQLDAZDUkxtb2IxDTALBgNVBAMMBGNybDAwH6AdoBuG\n' +
-    'GWh0dHA6Ly8xMjcuMC4wLjEvY3JsMC5jcmwwDQYJKoZIhvcNAQELBQADggEBAJRV\n' +
-    'bfDGDmTmGoAEtq0Jj5aCDhCrLCC48sRx4Fuc7Oh72cG1p7xIVLpFxDeqQzEsN2U2\n' +
-    'z8owmdwrsngIIsc3LQ9YJkA88i+wUp2epOX8BUeHuMPf4jKi+FdYNwciYEpH3Tnn\n' +
-    '8gTajeZ40v9r8axv/xxwcS71RUZg/EGycECA2f7q35XCAWgUS+HUFBrog1XrCATa\n' +
-    'dkg1Pp2plTl5QpLzJZ4mNS6Yfik3jvwxxmlsdAY81TABOWLCoEDGMK+/3BVK3JIK\n' +
-    'v1EcSzepF59YIcJ/VemEhQU9rJCr6k+MIC39v1xoXfj+Sb121Q9sDD7WuT0V/3JF\n' +
-    'oYjU6io07CCCmeNCw+I=\n' +
-    '-----END CERTIFICATE-----'
 !(async () => {
-    await main();
+    Utils = await loadUtils();
+    if (typeof $request != "undefined") {
+        await getCookie();
+    } else {
+        await main();
+    }
 })().catch((e) => {$.log(e)}).finally(() => {$.done({});});
 
 async function main() {
     console.log('作者：@xzxxn777\n频道：https://t.me/xzxxn777\n群组：https://t.me/xzxxn7777\n自用机场推荐：https://xn--diqv0fut7b.com\n')
-    if (!HQZL) {
-        console.log("先去boxjs填写账号密码")
-        await sendMsg('先去boxjs填写账号密码');
-        return
-    }
-    Utils = await loadUtils();
-    CryptoJS = Utils.createCryptoJS();
-    let arr = HQZL.split(" ");
-    for (const item of arr) {
-        phone = item.split("&")[0]
-        password = item.split("&")[1]
-        console.log(`用户：${phone}开始任务`)
-        iv = CryptoJS.enc.Utf8.parse('51C1A11FFB006C10');
-        key = CryptoJS.enc.Utf8.parse('12A63EDBA74F77CF');
-        console.log("登录")
-        let login = await loginPost(`/user/account/thi/login?appId=M001&deviceId=${generateUUID().replace(/-/g, '')}tsp2`,`password=${encrypt(key,iv,password)}&mobile=${phone}&version=1`)
-        console.log('登录结果：' + login.status)
-        if (login.status != 'SUCCEED') {
-            continue
+    for (const item of GQFT) {
+        id = item.id;
+        token = item.token;
+        refreshToken = item.refreshToken;
+        console.log(`用户：${id}开始任务`)
+        let key = s(), iv = s();
+        let detail = await commonGet('/main/api/my/sec/lgn/customer/detail');
+        if (detail.header.code != 10000000) {
+            console.log(detail.header.message)
+            console.log('刷新token')
+            let refresh = await refreshPost('/ha/iam/api/lgn/sec/checkAndUpdateToken',{
+                encryptKey: encryptKey(`${key}@DS@${iv}`),
+                encryptData: encryptData({ "refreshToken": refreshToken}, key, iv),
+            })
+            if (refresh.header.code == 10000000) {
+                token = refresh.body.accessToken;
+                refreshToken = refresh.body.refreshToken;
+                let arr = ($.isNode() ? JSON.parse(process.env.GQFT) : $.getjson("GQFT")) || [];
+                const index = arr.findIndex(e => e.id == id);
+                arr[index].token = token;
+                arr[index].refreshToken = refreshToken;
+                $.setjson(arr, "GQFT");
+            } else {
+                console.log(refresh.header.message)
+                await sendMsg(`用户：${id}\ntoken已过期，请重新获取`);
+                continue
+            }
         }
-        token = login.accountVo.token;
-        aid = login.accountVo.cid;
-        console.log("开始签到")
-        let sign = await commonPost('/fawcshop/collect-public/v1/score/addScore',{"scoreType":"2"})
-        if (sign.code == '000000') {
-            console.log(`签到成功，获得${sign.data.score}积分`)
+        console.log('开始签到')
+        key = s(), iv = s();
+        let sign = await commonPost('/main/api/marketing/lgn/task/sec/signinV2',{
+            encryptKey: encryptKey(`${key}@DS@${iv}`),
+            encryptData: encryptData({}, key, iv),
+        })
+        if (sign.header.code == 10000000) {
+            console.log(`签到成功，获得：${sign.body.point}积分`)
         } else {
-            console.log(sign.msg)
+            console.log(sign.header.message)
         }
-        console.log("————————————")
-        console.log("开始任务")
-        let taskList = await commonGet('/fawcshop/members/task/v3/getTaskList')
-        for (const task of taskList.data.noticeTaskList) {
-            console.log(`任务：${task.taskName}`)
-            if (task.completeFlag) {
-                console.log('任务已完成')
-                continue
-            }
-            if (task.taskCode == 'NT-APP_isLike') {
-                let getILikeThis = await commonGet(`/fawcshop/collect-sns/v1/dynamicTopic/getILikeThis?invId=31375771`)
-                console.log(getILikeThis.msg)
-            }
-        }
-        for (const task of taskList.data.dailyTaskList) {
-            console.log(`任务：${task.taskName}`)
-            if (task.completeFlag) {
-                console.log('任务已完成')
-                continue
-            }
-            if (task.taskCode == 'PT-APP_comment') {
-                let postList = await commonGet('/fawcshop/cms/api/front/content/v2/queryUnionContentPostList?pageNo=1&pageSize=10&menuType=1')
-                let contentId = ''
-                while(!contentId) {
-                    let index = Math.floor(Math.random() * postList?.data?.data?.length);
-                    contentId = postList?.data?.data[index]?.contentId;
-                    if (!contentId) {
-                        continue
-                    }
-                    let commentList = await commonGet(`/fawcshop/collect-sns/v1/dynamicTopic/getCommentDetailsInfoListNew?commentType=8500&contentId=${contentId}&pageNo=1&pageSize=10&commentDetailsId=&orderByRule=RULE10`)
-                    index = Math.floor(Math.random() * commentList?.data?.result?.length);
-                    let comment = commentList?.data?.result[index]?.commentContext || commentList?.data?.result[index]?.parent?.commentContext;
-                    if (comment) {
-                        console.log(`获取评论：${comment}`)
-                        let addComment = await commentPost('/fawcshop/collect-sns/v1/dynamicTopic/saveCommentDetailsRevision',{"commentContext":comment,"commentType":"8500","contentId":contentId,"parentId":"0","fileString":[]})
-                        console.log(addComment.msg)
-                    }
-                }
-            }
-            if (task.taskCode == 'PT-APP_share') {
-                let share = await commonPost('/fawcshop/collect-public/v1/score/addScore',{"scoreType":"4"})
-                console.log(share.msg)
-            }
-        }
+        // let doTask = false;
+        // let taskList = await commonGet('/main/api/marketing/lgn/task/dailyTask?noLoad=true')
+        // for (let task of taskList.body) {
+        //     console.log(`任务：${task.taskName}`)
+        //     if (task.status == 1) {
+        //         console.log(`任务已完成`)
+        //     } else {
+        //         if (task.taskCode == 'VIEW' || task.taskCode == 'SHARE' || task.taskCode == 'LIKE') {
+        //             doTask = true;
+        //         }
+        //     }
+        // }
+        // if (doTask) {
+        //     let articleList = await commonPost('/main/api/community/post/page',{"queryPostType":"NEWEST","pageNo":1,"pageSize":20})
+        //     for (let article of articleList.body.list) {
+        //         console.log(`文章：${article.title}`)
+        //         key = s(), iv = s();
+        //         let read = await commonPost('/main/api/community/sec/post/detail', {
+        //             encryptKey: encryptKey(`${key}@DS@${iv}`),
+        //             encryptData: encryptData({"postId": article.id}, key, iv),
+        //         })
+        //         console.log(`阅读文章：${read.header.message}`)
+        //         key = s(), iv = s();
+        //         let like = await commonPost('/main/api/community/lgn/sec/user/like', {
+        //             encryptKey: encryptKey(`${key}@DS@${iv}`),
+        //             encryptData: encryptData({"subjectId":article.id, "subjectType":"POST"}, key, iv),
+        //         })
+        //         console.log(`点赞文章：${like.header.message}`)
+        //         key = s(), iv = s();
+        //         let share = await commonPost('/main/api/community/lgn/sec/user/forward', {
+        //             encryptKey: encryptKey(`${key}@DS@${iv}`),
+        //             encryptData: encryptData({"subjectId":article.id, "subjectType":"POST"}, key, iv),
+        //         })
+        //         console.log(`分享文章：${share.header.message}`)
+        //     }
+        // }
         console.log("————————————")
         console.log("查询积分")
-        let getUserInfo = await commonPost(`/fawcshop/mall/v1/apiCus/getUserInfo`,{"userId":aid})
-        console.log(`拥有积分：${getUserInfo.data.scoreCount}\n`)
-        notice += `用户：${phone} 积分：${getUserInfo.data.scoreCount}\n`
+        key = s(), iv = s();
+        let points = await commonPost('/main/api/sec/lgn/integral/my-total-num',{
+            encryptKey: encryptKey(`${key}@DS@${iv}`),
+            encryptData: encryptData({}, key, iv),
+        })
+        console.log(`拥有积分：${points.body.score}\n`)
+        notice += `用户：${id} 拥有积分: ${points.body.score}\n`
     }
     if (notice) {
         await sendMsg(notice);
     }
 }
 
-async function loginPost(url,body) {
+async function getCookie() {
+    const body = $.toObj($response.body);
+    if (!body.encryptData || !body.encryptKey) {
+        return
+    }
+    const encryptData = body.encryptData;
+    const encryptKey = body.encryptKey;
+    let key = h5DecryptKey(encryptKey);
+    let data = decryptData(encryptData, key.split('@DS@')[0], key.split('@DS@')[1]);
+    token = JSON.parse(data).body.accessToken;
+    refreshToken = JSON.parse(data).body.refreshToken;
+    let detail = await commonGet('/main/api/my/sec/lgn/customer/detail');
+    const id = detail.body.account;
+    const newData = {"id": id, "token": token, "refreshToken": refreshToken};
+    const index = GQFT.findIndex(e => e.id == newData.id);
+    if (index !== -1) {
+        if (GQFT[index].token == newData.token) {
+            return
+        } else {
+            GQFT[index] = newData;
+            console.log(newData.token)
+            $.msg($.name, `🎉用户${newData.id}更新token成功!`, ``);
+        }
+    } else {
+        GQFT.push(newData)
+        console.log(newData.token)
+        $.msg($.name, `🎉新增用户${newData.id}成功!`, ``);
+    }
+    $.setjson(GQFT, "GQFT");
+}
+
+async function refreshPost(url,body) {
+    let params = getRefreshParams();
     return new Promise(resolve => {
         const options = {
-            url: `https://36.48.68.102${url}`,
+            url: `https://gw.nevapp.gtmc.com.cn${url}`,
             headers : {
-                'signt': Date.now(),
-                'simAudit': 'SUCCEED ',
-                'appkey': '7261076202',
-                'nonce': generateUUID().replace(/-/g, ''),
-                'token': '',
-                'Content-Type': 'application/x-www-form-urlencoded',
+                'Accept':'application/json',
+                'Authorization': "Bearer "+token,
+                'sig': params.sig,
+                'appVersion': '2.9.2',
+                'DeviceId': generateUUID(),
+                'operateSystem': 'android',
+                'appId': '04c79cea-520f-4b3f-9420-3b626e81c7c9',
+                'nonce': params.nonce,
+                'user-agent': 'okhttp/4.8.1',
+                'content-type': 'application/json; charset=utf-8',
+                'timestamp': params.timestamp,
                 'Connection': 'Keep-Alive',
-                'Accept-Encoding': 'gzip',
-                'user-agent': 'okhttp/4.9.2',
+                'Accept-Encoding': 'gzip'
             },
-            body: body,
-            https: {
-                key: stringToUint8Array(clientKey),
-                certificate: stringToUint8Array(clientCert),
-                rejectUnauthorized: false
-            }
+            body: JSON.stringify(body)
         }
         $.post(options, async (err, resp, data) => {
             try {
@@ -180,6 +169,10 @@ async function loginPost(url,body) {
                     console.log(`${$.name} API请求失败，请检查网路重试`)
                 } else {
                     await $.wait(2000)
+                    if (JSON.parse(data).encryptKey) {
+                        let key = androidDecryptKey(JSON.parse(data).encryptKey);
+                        data = decryptData(JSON.parse(data).encryptData, key.split('@DS@')[0], key.split('@DS@')[1]);
+                    }
                     resolve(JSON.parse(data));
                 }
             } catch (e) {
@@ -192,74 +185,29 @@ async function loginPost(url,body) {
 }
 
 async function commonPost(url,body) {
-    let params = getParams(body);
+    let params = getParams();
     return new Promise(resolve => {
         const options = {
-            url: `https://hqapp.faw.cn${url}`,
+            url: `https://gw.nevapp.gtmc.com.cn${url}`,
             headers : {
-                'Authorization': token,
-                'aid': aid,
-                'platform': '2',
-                'o35xzbbp': 'qjzsuioa',
-                'version': '5.0.0',
-                'X-Feature': 'sprint3-demo',
-                'anonymousId': 'f33b8c0033deea93',
-                'timestamp': params.timestamp,
+                'DeviceId':'1551f95d-6361-463b-bc05-3341b23f7ca4',
+                'sig': params.sig,
+                'operateSystem': 'h5',
                 'nonce': params.nonce,
-                'signature': params.signature,
-                'tenantId': '03001001',
-                'Content-Type': 'application/json',
-                'Connection': 'Keep-Alive',
-                'Accept-Encoding': 'gzip',
-                'user-agent': 'okhttp/4.9.2',
-            },
-            body: JSON.stringify(body)
-        }
-        $.post(options, async (err, resp, data) => {
-            try {
-                if (err) {
-                    console.log(`${JSON.stringify(err)}`)
-                    console.log(`${$.name} API请求失败，请检查网路重试`)
-                } else {
-                    await $.wait(2000)
-                    resolve(JSON.parse(data));
-                }
-            } catch (e) {
-                $.logErr(e, resp)
-            } finally {
-                resolve();
-            }
-        })
-    })
-}
-
-async function commentPost(url,body) {
-    let params = getParams(body);
-    return new Promise(resolve => {
-        const options = {
-            url: `https://hqapp.faw.cn${url}`,
-            headers : {
-                'Connection': 'keep-alive',
-                'Pragma': 'no-cache',
-                'Cache-Control': 'no-cache',
-                'o35xzbbp': 'qjzsuioa',
-                'Authorization': token,
-                'aid': aid,
-                'platform': '2',
-                'version': '5.0.0',
+                'Authorization': 'Bearer '+token,
+                'user-agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.0.0 Safari/537.36 MicroMessenger/6.8.0(0x16080000) NetType/WIFI MiniProgramEnv/Mac MacWechat/WMPF MacWechat/3.8.8(0x13080812) XWEB/1216',
+                'AnonymousID': 'o7LWx5dxlc4uL76CDJJ9NSMtnSq4',
+                'content-type': 'application/json',
+                'timestamp': params.timestamp,
+                'xweb_xhr': '1',
+                'appId': 'ecb4fdd3-da09-408a-913b-44d311d03105',
                 'Accept': '*/*',
-                'Origin': 'https://hqapp.faw.cn',
-                'X-Requested-With': 'com.sunao.qm.qm_android',
-                'timestamp': params.timestamp,
-                'nonce': params.nonce,
-                'signature': params.signature,
-                'Content-Type': 'application/json',
-                'Sec-Fetch-Site': 'same-origin',
+                'Sec-Fetch-Site': 'cross-site',
                 'Sec-Fetch-Mode': 'cors',
                 'Sec-Fetch-Dest': 'empty',
-                'Accept-Encoding': 'gzip, deflate',
-                'Accept-Language': 'zh-CN,zh;q=0.9,en-US;q=0.8,en;q=0.7',
-                'user-agent': 'okhttp/4.9.2',
+                'Referer': `https://servicewechat.com/wxd8a42d1c0c59c15d/64/page-frame.html`,
+                'Accept-Encoding': 'gzip, deflate, br',
+                'Accept-Language': 'zh-CN,zh;q=0.9',
             },
             body: JSON.stringify(body)
         }
@@ -270,6 +218,10 @@ async function commentPost(url,body) {
                     console.log(`${$.name} API请求失败，请检查网路重试`)
                 } else {
                     await $.wait(2000)
+                    if (JSON.parse(data).encryptKey) {
+                        let key = h5DecryptKey(JSON.parse(data).encryptKey);
+                        data = decryptData(JSON.parse(data).encryptData, key.split('@DS@')[0], key.split('@DS@')[1]);
+                    }
                     resolve(JSON.parse(data));
                 }
             } catch (e) {
@@ -282,22 +234,28 @@ async function commentPost(url,body) {
 }
 
 async function commonGet(url) {
+    let params = getParams();
     return new Promise(resolve => {
         const options = {
-            url: `https://hqapp.faw.cn${url}`,
+            url: `https://gw.nevapp.gtmc.com.cn${url}`,
             headers : {
+                'sig': params.sig,
+                'operateSystem': 'h5',
+                'nonce': params.nonce,
                 'Authorization': token,
-                'aid': aid,
-                'platform': '2',
-                'o35xzbbp': 'qjzsuioa',
-                'version': '5.0.0',
-                'X-Feature': 'sprint3-demo',
-                'anonymousId': 'f33b8c0033deea93',
-                'tenantId': '03001001',
-                'Content-Type': 'application/json',
-                'Connection': 'Keep-Alive',
-                'Accept-Encoding': 'gzip',
-                'user-agent': 'okhttp/4.9.2',
+                'user-agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.0.0 Safari/537.36 MicroMessenger/6.8.0(0x16080000) NetType/WIFI MiniProgramEnv/Mac MacWechat/WMPF MacWechat/3.8.8(0x13080812) XWEB/1216',
+                'AnonymousID': 'o7LWx5dxlc4uL76CDJJ9NSMtnSq4',
+                'content-type': 'application/json',
+                'timestamp': params.timestamp,
+                'xweb_xhr': '1',
+                'appId': 'ecb4fdd3-da09-408a-913b-44d311d03105',
+                'Accept': '*/*',
+                'Sec-Fetch-Site': 'cross-site',
+                'Sec-Fetch-Mode': 'cors',
+                'Sec-Fetch-Dest': 'empty',
+                'Referer': `https://servicewechat.com/wxd8a42d1c0c59c15d/64/page-frame.html`,
+                'Accept-Encoding': 'gzip, deflate, br',
+                'Accept-Language': 'zh-CN,zh;q=0.9',
             }
         }
         $.get(options, async (err, resp, data) => {
@@ -307,6 +265,10 @@ async function commonGet(url) {
                     console.log(`${$.name} API请求失败，请检查网路重试`)
                 } else {
                     await $.wait(2000)
+                    if (JSON.parse(data).encryptKey) {
+                        let key = h5DecryptKey(JSON.parse(data).encryptKey);
+                        data = decryptData(JSON.parse(data).encryptData, key.split('@DS@')[0], key.split('@DS@')[1]);
+                    }
                     resolve(JSON.parse(data));
                 }
             } catch (e) {
@@ -318,18 +280,28 @@ async function commonGet(url) {
     })
 }
 
-function getParams(body) {
-    let timestamp = Date.now();
-    let nonce = generateUUID().replace(/-/g, '') + generateUUID().replace(/-/g, '')
-    let sortedKeys = Object.keys(body).sort();
-    const sortedData = {};
-    sortedKeys.forEach(key => {
-        sortedData[key] = body[key];
-    });
-    iv = CryptoJS.enc.Utf8.parse('do78hojtrjrszqvs');
-    key = CryptoJS.enc.Utf8.parse('rnt69cfvwbtr7yss');
-    let signature = encrypt(key,iv,`${JSON.stringify(sortedData)}${timestamp}${nonce}`)
-    return {"timestamp":timestamp,"nonce":nonce,"signature":signature}
+function getParams() {
+    let timestamp = new Date().getTime();
+    let nonce = randomString();
+    let sig = Utils.md5(`${timestamp}${token}${nonce}ecb4fdd3-da09-408a-913b-44d311d03105611ac848-be11-404e-b7a3-54f735d2eb3e`);
+    return {"timestamp": timestamp, "nonce": nonce, "sig": sig};
+}
+
+function getRefreshParams() {
+    let timestamp = new Date().getTime();
+    let nonce = Math.floor(Math.random() * 900000) + 100000;
+    let sig = Utils.md5(`${timestamp}${token}${nonce}04c79cea-520f-4b3f-9420-3b626e81c7c9afc20663-e6d4-44a5-845f-fe872df3aacc`);
+    return {"timestamp": timestamp, "nonce": nonce, "sig": sig};
+}
+
+function randomString() {
+    for (var r = Math.random().toString(36).substr(2); r.length < 6;) r += Math.random().toString(36).substr(2);
+    return r.substr(0, 6)
+}
+
+function s() {
+    for (var r = Math.random().toString(36).substr(2); r.length < 16;) r += Math.random().toString(36).substr(2);
+    return r.substr(0, 16)
 }
 
 function generateUUID() {
@@ -340,24 +312,50 @@ function generateUUID() {
     });
 }
 
-function stringToUint8Array(string) {
-    const binaryString = string;
-    const len = binaryString.length;
-    const bytes = new Uint8Array(len);
-    for (let i = 0; i < len; i++) {
-        bytes[i] = binaryString.charCodeAt(i);
-    }
-    return bytes;
-}
-
-function encrypt(key,iv,word) {
-    var srcs = CryptoJS.enc.Utf8.parse(word);
-    var encrypted = CryptoJS.AES.encrypt(srcs, key, {
+function encryptData(data, key, iv) {
+    CryptoJS = Utils.createCryptoJS();
+    key = CryptoJS.enc.Utf8.parse(key);
+    iv = CryptoJS.enc.Utf8.parse(iv);
+    data = CryptoJS.enc.Utf8.parse(JSON.stringify(data));
+    var encrypted = CryptoJS.AES.encrypt(data, key, {
         iv: iv,
         mode: CryptoJS.mode.CBC,
-        padding: CryptoJS.pad.Pkcs7
+        padding: CryptoJS.pad.Pkcs7,
+    }).ciphertext.toString(CryptoJS.enc.Base64);
+    return encrypted;
+}
+
+function decryptData(data, key, iv) {
+    CryptoJS = Utils.createCryptoJS();
+    key = CryptoJS.enc.Utf8.parse(key);
+    iv = CryptoJS.enc.Utf8.parse(iv);
+    var decrypted = CryptoJS.AES.decrypt(data, key, {
+        iv: iv,
+        mode: CryptoJS.mode.CBC,
+        padding: CryptoJS.pad.Pkcs7,
     });
-    return encrypted.toString();
+    var decryptedData = decrypted.toString(CryptoJS.enc.Utf8);
+    return decryptedData;
+}
+
+function encryptKey(data) {
+    let encryptor = new (Utils.loadJSEncrypt());
+    let privateKey ="MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA49jxpFBAoEslNYrHb0wT8nCpGBn3hvjgToNkp7lFpsSeRS7WbHoFJEvmf1U83cHrbTzRFRowPft/FGBw6/6dZcmMjMgz1n0FWlqk0d7QjEDL+t9Dj9tH9e/qdGfJ3bzR0ZgpgQMpKpx5I5fcEgzMYnHWGLZBY+v+PlPTN/1mz0nnRtIIxb8YuZZFvadfGTC8jeD7tMERpd5zENml5cLbVujENsag9AIpvLdvR6fSewi3l9QmssWpty50UpcAWsvAs+ExRYyUe/s1lwfSdSciW6Lrj4sp4MMaWifdTQUbKKEeuRugEqJSDrxhxoybEbSbl2CYaTR8kifZ1n+lcAh6cQIDAQAB"
+    encryptor.setPublicKey(privateKey);
+    return  encryptor.encrypt(data);
+}
+
+function h5DecryptKey(data) {
+    let decryptor = new (Utils.loadJSEncrypt());
+    let privateKey ="MIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQCUEPwXFgsGTngqifX48k/5CRBNVA2/mLJhl+fP7Z0UHrSQmI31rtXcb9zN6PMG0jvNxk0oLvrUgf1K/lfgDp0noUQpCbHqkCk0CGQogSIVr/ktu5lhev0/P+9pkFfXrrZWKYhBk/z7r/XYvmsm4TVyFhge5WZqfY+HXhFmzJEu9lhq9VACXsfXJ6O778Dj3fF6hHsyNsai+qGNL31bdObxJG8EhWNcwK0ejCa8XzsscasbjZ/AhTwAQf9kxT9diCZv2vWvK5QtDhxMbqyQ6lFE8Ew9jaAHYnp2jxh3CwcAMp9B0+Ne4JOBaY7IjH9ENqMC29cYnhxNhj3ZGcbEu6lpAgMBAAECggEBAISKY66iu8GscmLZ1kY/Whk55M7jw97TaDJ2UTrOn8KH7ehVtxXKqIPH2qaztQBRJtl/fkfPLhcWOU9tN+pICqOT9zipBgtLeqaqMEYVuhYhzPMEMDuTZai9qakcXZWjPnMIgID7YQVHsNGROse15yq13mehv7jpppZtPTSBQCEBZAw+SFNS4KVfBDKNntlesEuLJHGWWXnqxWwK3YA4IdUAJjT5kDEiYQs7uy2FHqdcZnw7hV/Tt3OWDqrOB8zoZVhEg9dLvqpBaUi6yh9ihUYJBtFegmsFSY7MazHQjYnY8bcEcoma22c3AZbGeRwTwrNrlL0/UvF60L1njx4xhSUCgYEA0Xgh4mFSrp5E0UbMvy5TnpayH1hcaJNFjyGgQGdwgnE69gzR1Grqv+ihSjTbPvQHu9IGnuXb6Pdm/tuj2ml4xTJ9OnTe2/x/TzMIserNfRD1v6prxjNgZc+YDEebxHTWDBtCNpdbOEy27yO4fc9UvIoIbgG5eDTcMwCtiIt+98sCgYEAtPUPBqegfiDzyBP7l2hxhGwFgIrsFYIg3lJwwlyYpZEt8p/TMwPAMb2k+nfQPtyS6T2bBGr2PAKUAubD1SrwGE4ndXO4SDB814ll93ZrE7X18iyoGBwbgpjGMONK3nbS2z+2WrFEtQZaUuLiiZp+hnxk5uW7EQ5RnToOaUTPtRsCgYBNUOhA5Odd6LFCBb4BOxpGSR1KEJVbTDC6mhDKdOPEYgL/WtAAdc5cM4OFHmlmnTBVlTo4YGOBZAAyReP+9DtNnks2zniL/nEHTLEC6sYaSa5Lpp3NNJ16NtvKfIv0QaPYKB+Sgt96smY7cpXgaiy+wrxFzoEk623zrWZgJg0hbQKBgFMkEO5O0CeDPl6cB8lt/FIKS5Dew0+yhSWAnTw/zQatKH5EPoY+3+w6pPVLXUu0jm9JldK2zkGOMbEPk8R6QOv55JlLPM02MfXZtBa5usLIpKLLL8Q8Dcu4I79MfxatY33GzSLoNZgyvgc9JTZx3FYwCzAnNwbEHG1vwjVNn10nAoGASPxDtahASVh/IN6sjFR1soU8fuzEzThpnchfNVp3BeROR/8fXyfyBk3hKGmh6PY41XttKrGBwCaztCwA6zoTv7/SmzqNCzknq4uFbr9o455T0+0gtBKS6vFv1zCnvyMXjcmyCvB7gIRnhoq5W/z9l8VtAagNi9JOhZpjCl7Ep70="
+    decryptor.setPrivateKey(privateKey);
+    return  decryptor.decrypt(data);
+}
+function androidDecryptKey(data) {
+    let decryptor = new (Utils.loadJSEncrypt());
+    let privateKey ="MIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQDY3cIYJUz88prEtqzcQDRekpyyPJNYnR/i9nvL8tBZBWccEgoXhw4RFaoGJfuPiUM6NDSzgSb5YnFfBVNY+kDmZcmyjEvlh68pas8jTD6rbnuAY9YhehgAV456S0/EST0NFyFvoUUN9crgm7d1DbjdhEmeN9ouXAB7aOvY4hIlXHJMfPoqBv8lmVxenqYAM2b4U9/qdleWViRMuwpgcs8HrErHPNpWvHQ1CFr41M4NVAM4/fF2VZfWNuzpfOwpCfVzLo+B4xJTqmZ7xImHQ5qg/IK3RXwDxw2TgtviX7u8vYS6WprRUkwDtN5bdLFJLBymKv78PRG4v6XG22wcymb5AgMBAAECggEARvCTk05wVrYNhpezCAFAoEcZVvyVvoD3c0jpyhdNrDEmP3pvLq8RHOmXSpeWKKfgA+Qb8TQoSZ+4MjsNvqduH2/ggLWABj9SPxwfUg6Y2X80ixUdcKn9u+7oPnzwROcoP2X3nAqHCkAC82I8qt+oP14MruLaThvuVHBH5hRdlzaCEkCyZz0/w+g6GqvzIyp0w3RKprQxTLYU8JIT9wWIVVmDWINAvcdKQj1VC/Oui3sWv9yXwjzf37HrTmH5sEAkizMwNuDCHOA52E0DSnirS+FPAYhkvDSwoO952sXaBrVDV+a1zjcgl9UsZ6xy8W+GeR+BmpRrk3xwfi2tHXumOQKBgQD49jCNpED3vo7JqcVJAZ7hWFYMtlLDRCpDe6UO1VvGbdbeBm2nW03x00B1zvvj++DfNnCsVuopqu/YMOU+u6DVSz6u01aI9tNu7xdLqPn5BcxiF9IBAXjsENCCinw7LV/CrBhotw3ny5RzV4+ZCPx3BTSLYsRMmRZzQLbtD6rh+wKBgQDe/0jDEx3DLenmtypBtPpoLbMYKlZCOZRYiJbfLmgfnQkrrBJqEUi56kaseWRujmKcanMxyqblsh9gL+tvBNRr8a2udJj91/OeJlo612LOebiPNtPeTn+O8jRPVVxQ2/2nJlTyfdju2PrxaupLN9JQYhp1S02QalejRHZ4eDp8mwKBgQChjSe+kepymR4Q8HCLylhuBCN6hkk4WqBOQArAkGTIY3g9hNBc/BudI6c9iz3bGBQ45BvDSXcT6M9Qa5Im3hwkrHoVeiA6KmjTIKTuPM1Q8ZlJwglNC8aK8PJM805gHDZ6nbANK1QDqRBAtH4DIViqZx9Mn5+f0OtHiKPrOvJ5RwKBgCh5X0SA2LsPP0/v2MyaQ4TbHpF5RbS5bLJxACk77Awo3Xw+vAziXDfaTL+LPO5QC5fmPkhARvCT1twHdozs7H03HVX3tbkFFCOVRHU/mKBvOU9NHUFRMBfK4DGyBZJri2tmKq7kppYbbdiZljLWy+ZpF/JIG6jllEh+6Z3N/JeXAoGBAOpAGelHXKDcnzbVbdPIfG3A8I0NcC++hK+bZdVIu0UOT2HbP06Y8bDR/6WZRp6Ar+64p1wyPc5vX6/59Ip5OPu76HiLgzWEtgpL8naeO0HXIC2y7GnJOsUQDa+RWkNYRvevOJFAAGrZUnKvGH3agAazCwyTIIOeUrgQn2CF9GAg"
+    decryptor.setPrivateKey(privateKey);
+    return  decryptor.decrypt(data);
 }
 
 async function loadUtils() {
@@ -370,7 +368,7 @@ async function loadUtils() {
     console.log(`🚀 ${$.name}: 开始下载Utils代码`)
     return new Promise(async (resolve) => {
         $.getScript(
-            'https://cdn.jsdelivr.net/gh/xzxxn777/Surge@main/Utils/Utils.js'
+            'https://mirror.ghproxy.com/https://raw.githubusercontent.com/xzxxn777/Surge/main/Utils/Utils.js'
         ).then((fn) => {
             $.setdata(fn, "Utils_Code")
             eval(fn)
