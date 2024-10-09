@@ -11,9 +11,7 @@ openid提现用，微信登录或者设置提现账号就会出现。非必须�
 定时一天至少81次
 0-59/12 0,6-23 * * *
 */
-const jsname = '酷狗音乐'
-const $ = new Env(jsname);
-
+const $ = new Env("酷狗音乐")
 let envSplitor = ['\n','@']
 let httpResult, httpReq, httpResp
 
