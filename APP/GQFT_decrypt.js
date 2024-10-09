@@ -1,4 +1,6 @@
 //抓包https://gw.nevapp.gtmc.com.cn/ha/iam/api/sec/oauth/token响应体的encryptData填到data里
+
+const $ = new Env("广汽丰田token转换")
 const CryptoJS = require("crypto-js");
 let data = ''
 function decrypt(data, key, iv) {
